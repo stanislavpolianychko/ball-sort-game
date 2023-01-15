@@ -80,3 +80,31 @@ def move_down_as_possible(field: list, start_column_index, end_column_index):
     j -= 1
     field[i][end_column_index] = top_symbol_of_start_column
     field[j][start_column_index] = ' '
+
+
+def check_win(field: list, rows, cols):
+    for i in range(cols):
+        if field[rows - 1][i] != field[0][i]:
+            return False
+    return True
+
+
+def present_field(field: list):
+    for row in field:
+        print(*row)
+
+
+def run_game():
+    num_of_rows = 4
+    num_of_columns = 6
+    field = field_generator(num_of_rows, num_of_columns)
+
+    present_field(field)
+
+    while not check_win(num_of_rows, num_of_columns, field):
+        start_column_position = int(input("Get char from which column? - "))
+        end_column_position = int(input("Set it on which column? - "))
+        move_down_as_possible(field, start_column_position, end_column_position)
+        run_game()
+
+    print("Congratulations! You won!")
