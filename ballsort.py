@@ -37,3 +37,46 @@ def field_generator(rows: int, columns: int):
                 field[random_row_id][random_cols_id] = random_character
 
     return field
+
+
+def move_down_as_possible(field: list, start_column_index, end_column_index):
+    # review if start and end indexes are same
+    if start_column_index == end_column_index:
+        print("you can not move symbol on same column")
+        return
+
+    # get real indexes to use in list
+    start_column_index -= 1
+    end_column_index -= 1
+
+    # get a top symbol of start column
+    if field[len(field) - 1][start_column_index] == ' ':
+        print("you choose a free column")
+        return
+
+    i = 0
+    while field[i][start_column_index] == ' ':
+        i += 1
+    top_symbol_of_start_column = field[i][start_column_index]
+
+    # put symbol on the top of end column
+    if field[0][end_column_index] != ' ':
+        print("you choose blocked column")
+        return
+
+    if field[len(field) - 2][end_column_index] == ' ':
+        field[len(field) - 2][end_column_index] = top_symbol_of_start_column
+        field[i][start_column_index] = ' '
+        return
+
+    j = 0
+    while field[j][end_column_index] == ' ':
+        j += 1
+
+    if field[j][end_column_index] != top_symbol_of_start_column:
+        print("wrong move")
+        return
+
+    j -= 1
+    field[i][end_column_index] = top_symbol_of_start_column
+    field[j][start_column_index] = ' '
