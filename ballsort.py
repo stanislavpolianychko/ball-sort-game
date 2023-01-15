@@ -64,8 +64,8 @@ def move_down_as_possible(field: list, start_column_index, end_column_index):
         print("you choose blocked column")
         return
 
-    if field[len(field) - 2][end_column_index] == ' ':
-        field[len(field) - 2][end_column_index] = top_symbol_of_start_column
+    if field[len(field) - 1][end_column_index] == ' ':
+        field[len(field) - 1][end_column_index] = top_symbol_of_start_column
         field[i][start_column_index] = ' '
         return
 
@@ -78,7 +78,7 @@ def move_down_as_possible(field: list, start_column_index, end_column_index):
         return
 
     j -= 1
-    field[i][end_column_index] = top_symbol_of_start_column
+    field[i+1][end_column_index] = top_symbol_of_start_column
     field[j][start_column_index] = ' '
 
 
@@ -101,10 +101,10 @@ def run_game():
 
     present_field(field)
 
-    while not check_win(num_of_rows, num_of_columns, field):
+    while not check_win(field, num_of_rows, num_of_columns):
         start_column_position = int(input("Get char from which column? - "))
         end_column_position = int(input("Set it on which column? - "))
         move_down_as_possible(field, start_column_position, end_column_position)
-        run_game()
+        present_field(field)
 
     print("Congratulations! You won!")
