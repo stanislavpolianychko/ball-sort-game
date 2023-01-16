@@ -1,5 +1,5 @@
 import random
-import addition_functions as add_func
+from src import addition_functions as add_func
 
 
 # function generate main game field and full it with all necessary chars
