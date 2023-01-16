@@ -1,8 +1,8 @@
 import random
-import string
 import addition_functions as add_func
 
 
+# function generate main game field and full it with all necessary chars
 def field_generator(rows: int, columns: int):
     # create 2d list for field
     field = [[None for _ in range(columns)] for _ in range(rows)]
@@ -10,23 +10,20 @@ def field_generator(rows: int, columns: int):
     # get indexes of free columns
     free_column_1 = random.randint(0, columns - 1)
     free_column_2 = random.randint(0, columns - 1)
-
     while free_column_1 == free_column_2:
         free_column_2 = random.randint(0, columns)
 
     # set space symbol in free columns
     for row_index in range(rows):
-        field[row_index][free_column_1] = ' '
-        field[row_index][free_column_2] = ' '
+        field[row_index][free_column_2] = field[row_index][free_column_1] = ' '
 
     # set different balls symbols in every column
-    all_symbols_string = string.ascii_letters + string.punctuation
     used_symbols = ' '
 
     while add_func.is_value_in_2d_list(None, field):
-        random_character = random.choice(all_symbols_string)
+        random_character = add_func.get_random_char()
         while random_character in used_symbols:
-            random_character = random.choice(all_symbols_string)
+            random_character = add_func.get_random_char()
         used_symbols += random_character
 
         while add_func.count_of_value_in_2d_list(random_character, field) < rows:
@@ -39,49 +36,44 @@ def field_generator(rows: int, columns: int):
     return field
 
 
+# function which carry out movement of chosen char from start column to end
 def move_down_as_possible(field: list, start_column_index, end_column_index):
-    # review if start and end indexes are same
-    if start_column_index == end_column_index:
-        print("you can not move symbol on same column")
+    # variables
+    rows = len(field)
+    cols = len(field[0])
+    rows_max_id = rows - 1
+
+    # start reviews
+    if start_column_index == end_column_index or field[rows_max_id][start_column_index - 1] == ' '\
+            or field[0][end_column_index - 1] != ' ':
+        print("Ops... You chose wrong columns :(")
         return
 
-    # get real indexes to use in list
-    start_column_index -= 1
-    end_column_index -= 1
+    # get char from start in char for exchange variable
+    start_index = 0
+    while field[start_index][start_column_index - 1] == ' ':
+        start_index += 1
+    char_for_exchange = field[start_index][start_column_index - 1]
 
-    # get a top symbol of start column
-    if field[len(field) - 1][start_column_index] == ' ':
-        print("you choose a free column")
+    if field[rows_max_id][end_column_index - 1] == ' ':
+        field[rows_max_id][end_column_index - 1] = char_for_exchange
+        field[start_index][start_column_index - 1] = ' '
         return
 
-    i = 0
-    while field[i][start_column_index] == ' ':
-        i += 1
-    top_symbol_of_start_column = field[i][start_column_index]
+    # set char in end column
+    end_index = 0
+    while field[end_index][end_column_index - 1] == ' ':
+        end_index += 1
 
-    # put symbol on the top of end column
-    if field[0][end_column_index] != ' ':
-        print("you choose blocked column")
+    if field[end_index][end_column_index - 1] == char_for_exchange:
+        field[end_index - 1][end_column_index - 1] = char_for_exchange
+        field[start_index][start_column_index - 1] = ' '
+    else:
+        print("Ops... You chose wrong columns :(")
         return
 
-    if field[len(field) - 1][end_column_index] == ' ':
-        field[len(field) - 1][end_column_index] = top_symbol_of_start_column
-        field[i][start_column_index] = ' '
-        return
 
-    j = 0
-    while field[j][end_column_index] == ' ':
-        j += 1
-
-    if field[j][end_column_index] != top_symbol_of_start_column:
-        print("wrong move")
-        return
-
-    j -= 1
-    field[i+1][end_column_index] = top_symbol_of_start_column
-    field[j][start_column_index] = ' '
-
-
+# function check if all chars in every column are identical
 def check_win(field: list, rows, cols):
     for i in range(cols):
         if field[rows - 1][i] != field[0][i]:
@@ -89,22 +81,28 @@ def check_win(field: list, rows, cols):
     return True
 
 
+# function present game field in terminal output
 def present_field(field: list):
     for row in field:
         print(*row)
 
 
+# main game function
 def run_game():
+    # set variables
     num_of_rows = 4
     num_of_columns = 6
     field = field_generator(num_of_rows, num_of_columns)
 
+    # present game field for start
     present_field(field)
 
+    # main game loop which ends when every char in all columns are same
     while not check_win(field, num_of_rows, num_of_columns):
         start_column_position = int(input("Get char from which column? - "))
         end_column_position = int(input("Set it on which column? - "))
         move_down_as_possible(field, start_column_position, end_column_position)
         present_field(field)
 
+    # message, when game ends
     print("Congratulations! You won!")
