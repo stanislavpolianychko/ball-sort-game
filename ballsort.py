@@ -83,8 +83,10 @@ def check_win(field: list, rows, cols):
 
 # function present game field in terminal output
 def present_field(field: list):
-    for row in field:
-        print(*row)
+    for row_index, row in enumerate(field):
+        print(row_index+1, *row, sep='|', end='|\n')
+    print(' ', *['=' for _ in range(len(field[0]))])
+    print(' ', *[i + 1 for i in range(len(field[0]))])
 
 
 # main game function
@@ -105,4 +107,4 @@ def run_game():
         present_field(field)
 
     # message, when game ends
-    print("Congratulations! You won!")
+    print("Congratulations! You won : )")
